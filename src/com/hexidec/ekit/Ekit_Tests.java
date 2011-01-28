@@ -3,12 +3,7 @@ package com.hexidec.ekit;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.InvocationTargetException;
-
 import javax.swing.JButton;
-import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
-import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 
 import org.fest.swing.core.GenericTypeMatcher;

@@ -539,7 +539,7 @@ public class EkitCore extends JPanel implements ActionListener, KeyListener, Foc
 		actionAlignCenter     = new AlignAction(this, Translatrix.getTranslationString("AlignCenter"), StyleConstants.ALIGN_CENTER);
 		actionAlignRight      = new AlignAction(this, Translatrix.getTranslationString("AlignRight"), StyleConstants.ALIGN_RIGHT);
 		actionAlignJustified  = new AlignAction(this, Translatrix.getTranslationString("AlignJustified"), StyleConstants.ALIGN_JUSTIFIED);
-		actionInsertAnchor    = new CustomAction(this, Translatrix.getTranslationString("InsertAnchor") + menuDialog, HTML.Tag.A);
+		actionInsertAnchor    = new CustomAction(new DefaultMyEkitCore(this), Translatrix.getTranslationString("InsertAnchor") + menuDialog, HTML.Tag.A);
 
 		/* Build the menus */
 		/* FILE Menu */
@@ -662,7 +662,7 @@ public class EkitCore extends JPanel implements ActionListener, KeyListener, Foc
 		jMenuFont.addSeparator();
 		JMenu jMenuFontColor = new JMenu(Translatrix.getTranslationString("Color"));
 			Hashtable<String, String> customAttr = new Hashtable<String, String>(); customAttr.put("color", "black");
-			jMenuFontColor.add(new JMenuItem(new CustomAction(this, Translatrix.getTranslationString("CustomColor") + menuDialog, HTML.Tag.FONT, customAttr)));
+			jMenuFontColor.add(new JMenuItem(new CustomAction(new DefaultMyEkitCore(this), Translatrix.getTranslationString("CustomColor") + menuDialog, HTML.Tag.FONT, customAttr)));
 			jMenuFontColor.add(new JMenuItem(new StyledEditorKit.ForegroundAction(Translatrix.getTranslationString("ColorAqua"),    new Color(  0,255,255))));
 			jMenuFontColor.add(new JMenuItem(new StyledEditorKit.ForegroundAction(Translatrix.getTranslationString("ColorBlack"),   new Color(  0,  0,  0))));
 			jMenuFontColor.add(new JMenuItem(new StyledEditorKit.ForegroundAction(Translatrix.getTranslationString("ColorBlue"),    new Color(  0,  0,255))));

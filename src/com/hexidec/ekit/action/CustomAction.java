@@ -25,30 +25,27 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.Enumeration;
 import java.util.Hashtable;
+
 import javax.swing.JColorChooser;
-import javax.swing.JTextPane;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.text.html.HTML;
 
-import com.hexidec.ekit.EkitCore;
 import com.hexidec.ekit.Mutator;
 import com.hexidec.ekit.component.SimpleInfoDialog;
-import com.hexidec.ekit.component.UserInputAnchorDialog;
-
 import com.hexidec.util.Translatrix;
 
 /** Class for implementing custom HTML insertion actions
 */
 public class CustomAction extends StyledEditorKit.StyledTextAction
 {
-	protected EkitCore parentEkit;
+	protected MyEkitCore parentEkit;
 	private   HTML.Tag htmlTag;
 	private   Hashtable htmlAttribs;
-   private Mutator mutator;
+	private Mutator mutator;
 
-	public CustomAction(EkitCore ekit, String actionName, HTML.Tag inTag, Hashtable attribs)
+	public CustomAction(MyEkitCore ekit, String actionName, HTML.Tag inTag, Hashtable attribs)
 	{
 		super(actionName);
 		parentEkit  = ekit;
@@ -56,18 +53,18 @@ public class CustomAction extends StyledEditorKit.StyledTextAction
 		htmlAttribs = attribs;
 	}
 
-	public CustomAction(EkitCore ekit, String actionName, HTML.Tag inTag)
+	public CustomAction(MyEkitCore ekit, String actionName, HTML.Tag inTag)
 	{
 		this(ekit, actionName, inTag, new Hashtable());
 	}
 
 	public void actionPerformed(ActionEvent ae)
 	{
-      mutator = parentEkit.getMutator();
+		mutator = parentEkit.getMutator();
 		if(this.isEnabled())
 		{
 			Hashtable<String, String> htmlAttribs2 = new Hashtable<String, String>();
-			JTextPane parentTextPane = parentEkit.getTextPane();
+			MyJTextPane parentTextPane = parentEkit.getTextPane();
 			String selText = parentTextPane.getSelectedText();
 			int textLength = -1;
 			if(selText != null)
@@ -76,7 +73,7 @@ public class CustomAction extends StyledEditorKit.StyledTextAction
 			}
 			if(selText == null || textLength < 1)
 			{
-				SimpleInfoDialog sidWarn = new SimpleInfoDialog(parentEkit.getFrame(), Translatrix.getTranslationString("Error"), true, Translatrix.getTranslationString("ErrorNoTextSelected"), SimpleInfoDialog.ERROR);
+				parentEkit.showInfoDialog(Translatrix.getTranslationString("Error"), true, Translatrix.getTranslationString("ErrorNoTextSelected"), SimpleInfoDialog.ERROR);
 			}
 			else
 			{
@@ -91,7 +88,7 @@ public class CustomAction extends StyledEditorKit.StyledTextAction
 					for(int i = caretOffset; i < caretOffset + internalTextLength; i++)
 					{
 						parentTextPane.select(i, i + 1);
-						sasText = new SimpleAttributeSet(parentTextPane.getCharacterAttributes());
+						sasText = parentTextPane.newSimpleAttributeSet();
 						Enumeration attribEntries1 = sasText.getAttributeNames();
 						while(attribEntries1.hasMoreElements() && currentAnchor.equals(""))
 						{
@@ -124,7 +121,7 @@ public class CustomAction extends StyledEditorKit.StyledTextAction
 				{
 					if(!htmlAttribs.containsKey("href"))
 					{
-						UserInputAnchorDialog uidInput = new UserInputAnchorDialog(parentEkit, Translatrix.getTranslationString("AnchorDialogTitle"), true, currentAnchor);
+						MyUserInputAnchorDialog uidInput = parentEkit.newUserInputAnchorDialog(parentEkit, Translatrix.getTranslationString("AnchorDialogTitle"), true, currentAnchor);
 						String newAnchor = uidInput.getInputText();
 						uidInput.dispose();
 						if(newAnchor != null)
@@ -142,7 +139,7 @@ public class CustomAction extends StyledEditorKit.StyledTextAction
 				{
 					if(htmlAttribs.containsKey("color"))
 					{
-                  Color color = JColorChooser.showDialog(parentEkit.getFrame(), Translatrix.getTranslationString("CustomColorDialog"), Color.black);
+						Color color = parentEkit.chooseColor(Translatrix.getTranslationString("CustomColorDialog"), Color.black);
 					    if(color != null)
 						{
 							StyledEditorKit.ForegroundAction customColorAction = new StyledEditorKit.ForegroundAction("CustomColor", color);
@@ -159,10 +156,10 @@ public class CustomAction extends StyledEditorKit.StyledTextAction
 						Object entryValue = htmlAttribs2.get(entryKey);
 						insertAttribute(sasAttr, entryKey, entryValue);
 					}
-					JTextPane temp = parentEkit.getTextPane();
+					MyJTextPane temp = parentEkit.getTextPane();
 					
-					SimpleAttributeSet baseAttrs = new SimpleAttributeSet(temp.getCharacterAttributes());
-               mutator.mutate(baseAttrs);
+					SimpleAttributeSet baseAttrs = temp.newSimpleAttributeSet();
+					mutator.mutate(baseAttrs);
 					
 					Enumeration attribEntriesOriginal = baseAttrs.getAttributeNames();
 					while(attribEntriesOriginal.hasMoreElements())
@@ -181,7 +178,7 @@ public class CustomAction extends StyledEditorKit.StyledTextAction
 		}
 	}
 
-   private void insertAttribute(SimpleAttributeSet attrs, Object key, Object value)
+	private void insertAttribute(SimpleAttributeSet attrs, Object key, Object value)
 	{
 		if(value instanceof AttributeSet)
 		{
