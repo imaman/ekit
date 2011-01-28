@@ -157,9 +157,7 @@ public class Ekit_Tests extends FestSwingJUnitTestCase {
          
          @Override
          public void mutate(SimpleAttributeSet sas) {
-//            SimpleAttributeSet injectedSas = new SimpleAttributeSet();
             sas.addAttribute("font-family", "Monospace");
-//            sas.addAttribute("font-family", injectedSas);
          }
       });
 

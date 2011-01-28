@@ -1,8 +1,10 @@
 package com.hexidec.ekit;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 
 import javax.swing.JColorChooser;
+import javax.swing.text.StyledEditorKit;
 
 import com.hexidec.ekit.action.MyEkitCore;
 import com.hexidec.ekit.action.MyJTextPane;
@@ -55,6 +57,11 @@ public class DefaultMyEkitCore implements MyEkitCore {
 	public Color chooseColor(String title, Color c) {
         return JColorChooser.showDialog(inner.getFrame(), title, c);
 	}
-	
-	
+
+   @Override
+   public void setForegroundColor(Color color, ActionEvent ae) {
+      StyledEditorKit.ForegroundAction customColorAction 
+         = new StyledEditorKit.ForegroundAction("CustomColor", color);
+      customColorAction.actionPerformed(ae);
+   }
 }

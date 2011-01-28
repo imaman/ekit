@@ -26,7 +26,6 @@ import java.awt.event.ActionEvent;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import javax.swing.JColorChooser;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledEditorKit;
@@ -40,12 +39,13 @@ import com.hexidec.util.Translatrix;
 */
 public class CustomAction extends StyledEditorKit.StyledTextAction
 {
-	protected MyEkitCore parentEkit;
-	private   HTML.Tag htmlTag;
-	private   Hashtable htmlAttribs;
+   private static final long serialVersionUID = 7752928122828347312L;
+   protected MyEkitCore parentEkit;
+	private HTML.Tag htmlTag;
+	private Hashtable<?, ?> htmlAttribs;
 	private Mutator mutator;
 
-	public CustomAction(MyEkitCore ekit, String actionName, HTML.Tag inTag, Hashtable attribs)
+	public CustomAction(MyEkitCore ekit, String actionName, HTML.Tag inTag, Hashtable<?, ?> attribs)
 	{
 		super(actionName);
 		parentEkit  = ekit;
@@ -55,7 +55,7 @@ public class CustomAction extends StyledEditorKit.StyledTextAction
 
 	public CustomAction(MyEkitCore ekit, String actionName, HTML.Tag inTag)
 	{
-		this(ekit, actionName, inTag, new Hashtable());
+		this(ekit, actionName, inTag, new Hashtable<Object, Object>());
 	}
 
 	public void actionPerformed(ActionEvent ae)
@@ -89,7 +89,7 @@ public class CustomAction extends StyledEditorKit.StyledTextAction
 					{
 						parentTextPane.select(i, i + 1);
 						sasText = parentTextPane.newSimpleAttributeSet();
-						Enumeration attribEntries1 = sasText.getAttributeNames();
+						Enumeration<?> attribEntries1 = sasText.getAttributeNames();
 						while(attribEntries1.hasMoreElements() && currentAnchor.equals(""))
 						{
 							Object entryKey   = attribEntries1.nextElement();
@@ -98,7 +98,7 @@ public class CustomAction extends StyledEditorKit.StyledTextAction
 							{
 								if(entryValue instanceof SimpleAttributeSet)
 								{
-									Enumeration subAttributes = ((SimpleAttributeSet)entryValue).getAttributeNames();
+									Enumeration<?> subAttributes = ((SimpleAttributeSet)entryValue).getAttributeNames();
 									while(subAttributes.hasMoreElements() && currentAnchor.equals(""))
 									{
 										Object subKey = subAttributes.nextElement();
@@ -140,28 +140,25 @@ public class CustomAction extends StyledEditorKit.StyledTextAction
 					if(htmlAttribs.containsKey("color"))
 					{
 						Color color = parentEkit.chooseColor(Translatrix.getTranslationString("CustomColorDialog"), Color.black);
-					    if(color != null)
+						if(color != null)
 						{
-							StyledEditorKit.ForegroundAction customColorAction = new StyledEditorKit.ForegroundAction("CustomColor", color);
-							customColorAction.actionPerformed(ae);
+						   parentEkit.setForegroundColor(color, ae);
 						}
 					}
 				}
 				if(htmlAttribs2.size() > 0)
 				{
-					Enumeration attribEntries = htmlAttribs2.keys();
+					Enumeration<String> attribEntries = htmlAttribs2.keys();
 					while(attribEntries.hasMoreElements())
 					{
 						Object entryKey   = attribEntries.nextElement();
 						Object entryValue = htmlAttribs2.get(entryKey);
 						insertAttribute(sasAttr, entryKey, entryValue);
 					}
-					MyJTextPane temp = parentEkit.getTextPane();
-					
-					SimpleAttributeSet baseAttrs = temp.newSimpleAttributeSet();
+					SimpleAttributeSet baseAttrs = parentEkit.getTextPane().newSimpleAttributeSet();
 					mutator.mutate(baseAttrs);
 					
-					Enumeration attribEntriesOriginal = baseAttrs.getAttributeNames();
+					Enumeration<?> attribEntriesOriginal = baseAttrs.getAttributeNames();
 					while(attribEntriesOriginal.hasMoreElements())
 					{
 						Object entryKey   = attribEntriesOriginal.nextElement();
@@ -183,7 +180,7 @@ public class CustomAction extends StyledEditorKit.StyledTextAction
 		if(value instanceof AttributeSet)
 		{
 			AttributeSet subSet = (AttributeSet)value;
-			Enumeration attribEntriesSub = subSet.getAttributeNames();
+			Enumeration<?> attribEntriesSub = subSet.getAttributeNames();
 			while(attribEntriesSub.hasMoreElements())
 			{
 				Object subKey   = attribEntriesSub.nextElement();
@@ -230,6 +227,7 @@ public class CustomAction extends StyledEditorKit.StyledTextAction
 		while(attrs.isDefined(key))
 		{
 			attrs.removeAttribute(key);
+			break;
 		}
 		attrs.addAttribute(key, value);
 	}
